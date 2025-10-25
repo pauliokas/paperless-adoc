@@ -1,0 +1,20 @@
+services:
+  redis:
+    image: redis:7
+    restart: unless-stopped
+
+  paperless:
+    container_name: paperless
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+    depends_on:
+      - redis
+    environment:
+      PAPERLESS_REDIS: redis://redis:6379
+      PAPERLESS_TIME_ZONE: Europe/Vilnius
+      PAPERLESS_SECRET_KEY: changeme
+      PAPERLESS_APPS: paperless_adoc
+    volumes:
+      - ./paperless_adoc:/usr/src/paperless/src/paperless_adoc
+    ports:
+      - "8000:8000"

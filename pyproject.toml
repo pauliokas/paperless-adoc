@@ -1,0 +1,14 @@
+[project]
+name = "paperless-adoc"
+version = "1.0.0"
+description = "Paperless parser for .adoc files"
+readme = "README.md"
+requires-python = ">=3.14"
+
+[dependency-groups]
+dev = [
+    "paperless-ngx",
+]
+
+[tool.uv.sources]
+paperless-ngx = { git = "https://github.com/paperless-ngx/paperless-ngx" }
