@@ -9,12 +9,29 @@ services:
     restart: unless-stopped
     depends_on:
       - redis
+      - tika
+      - gotenberg
     environment:
       PAPERLESS_REDIS: redis://redis:6379
       PAPERLESS_TIME_ZONE: Europe/Vilnius
       PAPERLESS_SECRET_KEY: changeme
       PAPERLESS_APPS: paperless_adoc
+      PAPERLESS_TIKA_ENABLED: true
+      PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
     volumes:
       - ./paperless_adoc:/usr/src/paperless/src/paperless_adoc
     ports:
       - "8000:8000"
+
+  tika:
+    image: apache/tika:3.2.3.0
+    restart: unless-stopped
+
+  gotenberg:
+    image: gotenberg/gotenberg:8.23.2
+    restart: unless-stopped
+    command:
+      - "gotenberg"
+      - "--chromium-disable-javascript=true"
+      - "--chromium-allow-list=file:///tmp/.*"
