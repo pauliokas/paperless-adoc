@@ -5,7 +5,10 @@ services:
 
   paperless:
     container_name: paperless
-    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    # Built from ./Dockerfile so the plugin is installed rather than mounted:
+    # paperless-ngx v3 finds parsers through installed entry points, so a bind
+    # mount would no longer register anything.
+    build: .
     restart: unless-stopped
     depends_on:
       - redis
@@ -15,12 +18,11 @@ services:
       PAPERLESS_REDIS: redis://redis:6379
       PAPERLESS_TIME_ZONE: Europe/Vilnius
       PAPERLESS_SECRET_KEY: changeme
-      PAPERLESS_APPS: paperless_adoc
       PAPERLESS_TIKA_ENABLED: true
       PAPERLESS_TIKA_ENDPOINT: http://tika:9998
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
     volumes:
-      - ./paperless_adoc:/usr/src/paperless/src/paperless_adoc
+      - ./consume:/usr/src/paperless/consume
     ports:
       - "8000:8000"
 
